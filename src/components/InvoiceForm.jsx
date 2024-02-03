@@ -7,11 +7,10 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import InvoiceItem from "./InvoiceItem";
 import InvoiceModal from "./InvoiceModal";
-import { BiArrowBack } from "react-icons/bi";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useDispatch } from "react-redux";
 import { addInvoice, updateInvoice } from "../redux/invoicesSlice";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import generateRandomId from "../utils/generateRandomId";
 import { useInvoiceListData } from "../redux/hooks";
 
@@ -185,15 +184,6 @@ const InvoiceForm = () => {
 
   return (
     <Form onSubmit={openModal}>
-      <div className="d-flex align-items-center">
-        <BiArrowBack size={18} />
-        <div className="fw-bold mt-1 mx-2 cursor-pointer">
-          <Link to="/">
-            <h5>Go Back</h5>
-          </Link>
-        </div>
-      </div>
-
       <Row>
         <Col md={8} lg={9}>
           <Card className="p-4 p-xl-5 my-3 my-xl-4">
