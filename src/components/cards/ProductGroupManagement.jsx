@@ -5,9 +5,8 @@ import { useState } from "react";
 import { BiSolidPencil } from "react-icons/bi";
 
 export default function ProductGroupManagement() {
-  const { productGroupList, getOneProductGroup, listSize } =
-    useProductGroupListData();
-  const isListEmpty = productGroupList.length === 0;
+  const { productGroupList } = useProductGroupListData();
+  const isListEmpty = productGroupList.length === 0
   const [isOpen, setIsOpen] = useState(false);
 
   function openModal() {
@@ -35,7 +34,7 @@ export default function ProductGroupManagement() {
               className="w-100"
               onClick={handleCreateProductGroup}
             >
-              Create Product Group
+              Add Product Group
             </Button>
           </div>
         ) : (
@@ -48,7 +47,7 @@ export default function ProductGroupManagement() {
             >
               Add Product Group
             </Button>
-            <Table responsive>
+            <Table responsive className="mt-4">
               <thead>
                 <tr>
                   <th>Group ID</th>

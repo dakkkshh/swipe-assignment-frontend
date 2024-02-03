@@ -7,9 +7,9 @@ export const productSlice = createSlice({
         addProduct: (state, action) => {
             state.push(action.payload);
         },
-        updateInvoice: (state, action) => {
+        updateProduct: (state, action) => {
             const index = state.findIndex(
-                (product) => product.id === action.payload.id
+                (product) => product.productId === action.payload.productId
             );
             if (index !== -1) {
                 state[index] = action.payload.updatedProduct;

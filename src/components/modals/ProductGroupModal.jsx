@@ -93,7 +93,6 @@ export default function ProductGroupModal({
             <Modal
                 show={showModal}
                 onHide={closeModal}
-                size="lg"
                 centered
             >
                 <Form
@@ -105,7 +104,7 @@ export default function ProductGroupModal({
                     <Modal.Header closeButton>
                         <Modal.Title>
                             {
-                                isEdit ? "Edit Product Group" : "Create Product Group"
+                                isEdit ? "Edit Product Group" : "Add Product Group"
                             }
                         </Modal.Title>
                     </Modal.Header>
@@ -135,7 +134,9 @@ export default function ProductGroupModal({
                             variant="primary"
                             type="submit"
                         >
-                            Save Changes
+                            {
+                                isEdit ? "Update" : "Add"
+                            }
                         </Button>
                     </Modal.Footer>
                 </Form>

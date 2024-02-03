@@ -7,19 +7,19 @@ export const useProductListData = () => {
   const productList = useSelector(selectProductList);
   const productGroupList = useSelector(selectProductGroupList);
   const productWithGroupPopulatedList = productList.map((product) => {
-    const productGroup = productGroupList.find(
-      (productGroup) => productGroup.id === product.groupId
+    const populatedProductGroup = productGroupList.find(
+      (productGroup) => productGroup?.groupId?.toString() === product?.productGroup?.toString()
     );
     return {
       ...product,
-      group: productGroup ? productGroup : null,
+      productGroup: populatedProductGroup ? populatedProductGroup : null,
     };
   });
 
   const getOneProduct = (receivedId) => {
     return (
       productWithGroupPopulatedList.find(
-        (product) => product.id.toString() === receivedId.toString()
+        (product) => product?.productId?.toString() === receivedId?.toString()
       ) || null
     );
   };
@@ -39,7 +39,7 @@ export const useProductGroupListData = () => {
   const getOneProductGroup = (receivedId) => {
     return (
       productGroupList.find(
-        (productGroup) => productGroup.id.toString() === receivedId.toString()
+        (productGroup) => productGroup?.groupId?.toString() === receivedId?.toString()
       ) || null
     );
   };

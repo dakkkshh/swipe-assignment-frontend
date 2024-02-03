@@ -1,22 +1,8 @@
 import { Col, Row } from "react-bootstrap";
-import { useProductListData } from "../../redux/hooks";
+import ProductManagement from "../cards/ProductManagement";
 import ProductGroupManagement from "../cards/ProductGroupManagement";
 
 export default function ProductTab(){
-    const initialProductData = {
-        productId: "",
-        productName: "",
-        productDescription: "",
-        productPrice: "",
-        productGroup: "-1",
-    };
-
-    const {
-        productList,
-        getOneProduct,
-    } = useProductListData();
-    const isListEmpty = productList.length === 0;
-
     return (
         <Row
             className="min-vh-100"
@@ -25,6 +11,7 @@ export default function ProductTab(){
                 xs={12}
                 md={8}
             >
+                <ProductManagement />
             </Col>
             <Col
                 xs={12}
