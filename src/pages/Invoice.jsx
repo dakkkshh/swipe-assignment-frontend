@@ -21,7 +21,9 @@ const Invoice = () => {
   ];
   const [selectedTab, setSelectedTab] = useState(1);
   return (
-    <div>
+    <div
+      className="min-vh-100"
+    >
       <div className="d-flex align-items-center my-3">
         <BiArrowBack size={18} />
         <div className="fw-bold mt-1 mx-2 cursor-pointer">

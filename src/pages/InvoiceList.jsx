@@ -163,7 +163,7 @@ const InvoiceRow = ({ invoice, navigate }) => {
           discountRate: invoice.discountRate,
           discountAmount: invoice.discountAmount,
         }}
-        items={invoice.items}
+        products={invoice.products}
         currency={invoice.currency}
         subTotal={invoice.subTotal}
         taxAmount={invoice.taxAmount}

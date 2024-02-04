@@ -98,13 +98,13 @@ function ProductGroupRow({ group }) {
             <BiSolidPencil />
           </div>
         </Button>
+        <ProductGroupModal
+          showModal={isOpen}
+          closeModal={closeModal}
+          isEdit={true}
+          group={group}
+        />
       </td>
-      <ProductGroupModal
-        showModal={isOpen}
-        closeModal={closeModal}
-        isEdit={true}
-        group={group}
-      />
     </tr>
   );
 }

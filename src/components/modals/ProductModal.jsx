@@ -7,6 +7,11 @@ import {
     updateProduct
 } from "../../redux/productsSlice";
 
+function generatedRandomProductId(){
+    const id = Math.floor(Math.random() * 1000);
+    return `product-${id}`;
+}
+
 export default function ProductModal({
     showModal,
     closeModal,
@@ -43,7 +48,7 @@ export default function ProductModal({
         const isProductGroupExists = productGroupList.some(
             (group) => group?.groupId?.toString() === productGroup?.toString()
         );
-        const isValidProductGroup = productGroup === "-1" || isProductGroupExists;
+        const isValidProductGroup = productGroup?.toString() === "-1" || isProductGroupExists;
         if (!productName){
             formValidation.isValid = false;
             formValidation.message = "Product name is required";
@@ -86,13 +91,14 @@ export default function ProductModal({
             productName,
             productDescription,
             productPrice,
+            productGroup
         });
         if (!formValidation.isValid) {
             alert(formValidation.message);
         } else {
-            const latestProductId = productList.length + 1;
+            const randomProductId = generatedRandomProductId();
             const newProduct = {
-                productId: latestProductId,
+                productId: randomProductId,
                 productName,
                 productDescription,
                 productPrice,
@@ -189,7 +195,6 @@ export default function ProductModal({
                                 as="select"
                                 name="productGroup"
                                 defaultValue={isEdit ? product.productGroup?.groupId : "-1"}
-                                required
                             >
                                 <option value="-1">No product group</option>
                                 {productGroupList.map((group) => (

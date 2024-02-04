@@ -1,7 +1,12 @@
-import { useSelector } from "react-redux";
-import { selectInvoiceList } from "./invoicesSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectInvoiceList, updateInvoice } from "./invoicesSlice";
 import { selectProductList } from "./productsSlice";
 import { selectProductGroupList } from "./productGroupsSlice";
+
+const noGroupData = {
+  groupId: "-1",
+  groupName: "No Group",
+};
 
 export const useProductListData = () => {
   const productList = useSelector(selectProductList);
@@ -12,7 +17,7 @@ export const useProductListData = () => {
     );
     return {
       ...product,
-      productGroup: populatedProductGroup ? populatedProductGroup : null,
+      productGroup: populatedProductGroup ? populatedProductGroup : noGroupData,
     };
   });
 
@@ -24,10 +29,31 @@ export const useProductListData = () => {
     );
   };
 
+  const groupProductsByGroupId = (products) => {
+    const groupedProducts = [];
+    products.forEach((productId) => {
+      const product = getOneProduct(productId);
+      const groupIndex = groupedProducts.findIndex(
+        (group) => group.groupId?.toString() === product.productGroup?.groupId?.toString()
+      );
+      if (groupIndex === -1) {
+        groupedProducts.push({
+          groupId: product.productGroup?.groupId,
+          groupName: product.productGroup?.groupName,
+          products: [product],
+        });
+      } else {
+        groupedProducts[groupIndex].products.push(product);
+      }
+    });
+    return groupedProducts;
+  }
+
   const listSize = productWithGroupPopulatedList.length;
 
   return {
     productList: productWithGroupPopulatedList,
+    groupProductsByGroupId,
     getOneProduct,
     listSize,
   };
@@ -54,38 +80,59 @@ export const useProductGroupListData = () => {
 }
 
 export const useInvoiceListData = () => {
+  const dispatch = useDispatch();
   const invoiceList = useSelector(selectInvoiceList);
   const {
-    productList
+    getOneProduct,
+
   } = useProductListData();
-  const invoiceListWithProductsPopulated = invoiceList.map((invoice) => {
-    const products = invoice?.products?.map((product) => {
-      const productData = productList.find(
-        (productData) => productData.id === product.id
-      );
-      return {
-        ...product,
-        productData: productData ? productData : null,
-      };
-    }) || [];
-    return {
-      ...invoice,
-      products: products,
-    };
-  });
+
+  invoiceList.forEach((invoice) => {
+    const updatedInvoicePrice = invoice.products.reduce((acc, productId) => {
+      const product = getOneProduct(productId);
+      return acc + parseFloat(product?.productPrice);
+    }, 0);
+    if (parseFloat(updatedInvoicePrice) !== parseFloat(invoice.subTotal)){
+      console.log('updatedInvoicePrice', updatedInvoicePrice);
+      const taxAmount = parseFloat(
+        parseFloat(updatedInvoicePrice) * (parseFloat(invoice.taxRate || 0) / 100)
+      ).toFixed(2);
+
+      const discountAmount = parseFloat(
+        parseFloat(updatedInvoicePrice) * (parseFloat(invoice.discountRate || 0) / 100)
+      ).toFixed(2);
+
+      const total = (
+        parseFloat(updatedInvoicePrice) -
+        parseFloat(discountAmount) +
+        parseFloat(taxAmount)
+      ).toFixed(2);
+
+      dispatch(updateInvoice({
+        id: invoice.id,
+        updatedInvoice: {
+          ...invoice,
+          subTotal: parseFloat(updatedInvoicePrice).toFixed(2),
+          taxAmount,
+          discountAmount,
+          total,
+        }
+      }));
+    }
+  })
 
   const getOneInvoice = (receivedId) => {
     return (
-      invoiceListWithProductsPopulated.find(
+      invoiceList.find(
         (invoice) => invoice.id.toString() === receivedId.toString()
       ) || null
     );
   };
 
-  const listSize = invoiceListWithProductsPopulated.length;
+  const listSize = invoiceList.length;
 
   return {
-    invoiceList: invoiceListWithProductsPopulated,
+    invoiceList,
     getOneInvoice,
     listSize,
   };

@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useProductListData } from "../redux/hooks";
 
 const GenerateInvoice = () => {
   html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -27,6 +28,11 @@ const GenerateInvoice = () => {
 };
 
 const InvoiceModal = (props) => {
+  const products = props.products;
+  const {
+    groupProductsByGroupId
+  } = useProductListData(products);
+  const productsGroupedByGroupId = groupProductsByGroupId(products) || [];
   return (
     <div>
       <Modal
@@ -75,34 +81,62 @@ const InvoiceModal = (props) => {
                 <div>{props.info.dateOfIssue || ""}</div>
               </Col>
             </Row>
-            <Table className="mb-0">
-              <thead>
-                <tr>
-                  <th>QTY</th>
-                  <th>DESCRIPTION</th>
-                  <th className="text-end">PRICE</th>
-                  <th className="text-end">AMOUNT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {props.items.map((item, i) => {
-                  return (
-                    <tr id={i} key={i}>
-                      <td style={{ width: "70px" }}>{item.itemQuantity}</td>
-                      <td>
-                        {item.itemName} - {item.itemDescription}
-                      </td>
-                      <td className="text-end" style={{ width: "100px" }}>
-                        {props.currency} {item.itemPrice}
-                      </td>
-                      <td className="text-end" style={{ width: "100px" }}>
-                        {props.currency} {item.itemPrice * item.itemQuantity}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+            {
+              productsGroupedByGroupId.map((group) => (
+                <div
+                  key={group.groupId}
+                >
+                  <div
+                    className="mb-2 bg-warning-subtle py-1"
+                  >
+                    <p
+                      className="mb-0 text-center"
+                    >
+                      <b>
+                        {group.groupName}
+                      </b>
+                    </p>
+                  </div>
+                  <Table responsive>
+                    <thead>
+                      <tr>
+                        <th>PRODUCT</th>
+                        <th className="text-end">PRICE</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        group.products?.map((product, index) => (
+                          <tr
+                            key={`${product.productId}-${index}`}
+                          >
+                            <td>
+                              <p
+                                className="mb-0"
+                              >
+                                <b>
+                                  {product.productName}
+                                </b>
+                              </p>
+                              <p
+                                className="mb-0"
+                              >
+                                {product.productDescription}
+                              </p>
+                            </td>
+                            <td
+                              className="text-end"
+                            >
+                            {props.currency} {product.productPrice}
+                            </td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </Table>
+                </div>
+              ))
+            }
             <Table>
               <tbody>
                 <tr>
@@ -116,7 +150,7 @@ const InvoiceModal = (props) => {
                     TAX
                   </td>
                   <td className="text-end" style={{ width: "100px" }}>
-                    {props.currency} {props.taxAmmount}
+                    {props.currency} {props.taxAmount}
                   </td>
                 </tr>
                 {props.discountAmmount !== 0.0 && (
@@ -126,7 +160,7 @@ const InvoiceModal = (props) => {
                       DISCOUNT
                     </td>
                     <td className="text-end" style={{ width: "100px" }}>
-                      {props.currency} {props.discountAmmount}
+                      {props.currency} {props.discountAmount}
                     </td>
                   </tr>
                 )}

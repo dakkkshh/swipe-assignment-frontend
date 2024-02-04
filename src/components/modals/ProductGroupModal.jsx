@@ -6,6 +6,11 @@ import {
     updateProductGroup
 } from "../../redux/productGroupsSlice";
 
+function generatedRandomGroupId(){
+    const id = Math.floor(Math.random() * 1000);
+    return `group-${id}`;
+}
+
 export default function ProductGroupModal({
     showModal,
     closeModal,
@@ -25,7 +30,13 @@ export default function ProductGroupModal({
             message: ""
         };
         const isGroupExists = productGroupList.some(
-            (group) => group?.groupName?.toLowerCase() === groupName?.toLowerCase()
+            (curGroup) => {
+                if (isEdit && curGroup.groupId === group.groupId){
+                    return false;
+                } else {
+                    return curGroup?.groupName?.toLowerCase() === groupName?.toLowerCase()
+                }
+            }
         );
         if (!groupName){
             formValidation.isValid = false;
@@ -52,9 +63,9 @@ export default function ProductGroupModal({
         if (!formValidation.isValid) {
             alert(formValidation.message);
         } else {
-            const latestGroupId = productGroupList.length + 1;
+            const randomGroupId = generatedRandomGroupId();
             const newGroup = {
-                groupId: latestGroupId,
+                groupId: randomGroupId,
                 groupName
             };
             dispatch(addProductGroup(newGroup));

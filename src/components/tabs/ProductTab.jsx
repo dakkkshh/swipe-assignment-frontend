@@ -4,9 +4,7 @@ import ProductGroupManagement from "../cards/ProductGroupManagement";
 
 export default function ProductTab(){
     return (
-        <Row
-            className="min-vh-100"
-        >
+        <Row>
             <Col
                 xs={12}
                 md={8}

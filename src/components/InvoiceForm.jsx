@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { addInvoice, updateInvoice } from "../redux/invoicesSlice";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import generateRandomId from "../utils/generateRandomId";
-import { useInvoiceListData } from "../redux/hooks";
+import { useInvoiceListData, useProductListData } from "../redux/hooks";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
@@ -24,6 +24,10 @@ const InvoiceForm = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [copyId, setCopyId] = useState("");
+  const {
+    productList,
+    getOneProduct,
+  } = useProductListData();
   const { getOneInvoice, listSize } = useInvoiceListData();
   const [formData, setFormData] = useState(
     isEdit
@@ -53,43 +57,32 @@ const InvoiceForm = () => {
           discountRate: "",
           discountAmount: "0.00",
           currency: "$",
-          items: [
-            {
-              itemId: 0,
-              itemName: "",
-              itemDescription: "",
-              itemPrice: "1.00",
-              itemQuantity: 1,
-            },
-          ],
+          products: []
         }
   );
 
-  useEffect(() => {
-    handleCalculateTotal();
-  }, []);
-
-  const handleRowDel = (itemToDelete) => {
-    const updatedItems = formData.items.filter(
-      (item) => item.itemId !== itemToDelete.itemId
-    );
-    setFormData({ ...formData, items: updatedItems });
+  const handleRowDel = (productId) => {
+    let removedTheFirstOccurence = false;
+    const updatedProducts = formData.products?.filter((product) => {
+      if ((product?.toString() === productId?.toString()) && !removedTheFirstOccurence) {
+        removedTheFirstOccurence = true;
+        return false;
+      } else return true;
+    });
+    setFormData({ ...formData, products: updatedProducts });
     handleCalculateTotal();
   };
 
-  const handleAddEvent = () => {
-    const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    const newItem = {
-      itemId: id,
-      itemName: "",
-      itemDescription: "",
-      itemPrice: "1.00",
-      itemQuantity: 1,
-    };
-    setFormData({
-      ...formData,
-      items: [...formData.items, newItem],
-    });
+  const handleAddEvent = (selectedProductId) => {
+    const product = getOneProduct(selectedProductId);
+    if (!product){
+      alert("Product does not exists");
+    } else {
+      setFormData({
+        ...formData,
+        products: [...formData.products, selectedProductId],
+      });
+    }    
     handleCalculateTotal();
   };
 
@@ -97,9 +90,9 @@ const InvoiceForm = () => {
     setFormData((prevFormData) => {
       let subTotal = 0;
 
-      prevFormData.items.forEach((item) => {
-        subTotal +=
-          parseFloat(item.itemPrice).toFixed(2) * parseInt(item.itemQuantity);
+      prevFormData.products.forEach((productId) => {
+        const product = getOneProduct(productId);
+        subTotal += parseFloat(product?.productPrice);
       });
 
       const taxAmount = parseFloat(
@@ -122,18 +115,6 @@ const InvoiceForm = () => {
         total,
       };
     });
-  };
-
-  const onItemizedItemEdit = (evt, id) => {
-    const updatedItems = formData.items.map((oldItem) => {
-      if (oldItem.itemId === id) {
-        return { ...oldItem, [evt.target.name]: evt.target.value };
-      }
-      return oldItem;
-    });
-
-    setFormData({ ...formData, items: updatedItems });
-    handleCalculateTotal();
   };
 
   const editField = (name, value) => {
@@ -181,6 +162,20 @@ const InvoiceForm = () => {
       alert("Invoice does not exists!!!!!");
     }
   };
+
+  useEffect(() => {
+    handleCalculateTotal();
+  }, [])
+
+  useEffect(() => {
+    const updatedInvoicePrice = formData.products.reduce((acc, productId) => {
+      const product = getOneProduct(productId);
+      return acc + parseFloat(product?.productPrice);
+    }, 0);
+    if (parseFloat(updatedInvoicePrice) !== parseFloat(formData.subTotal)) {
+      handleCalculateTotal();
+    }
+  }, [productList]);
 
   return (
     <Form onSubmit={openModal}>
@@ -292,11 +287,10 @@ const InvoiceForm = () => {
               </Col>
             </Row>
             <InvoiceItem
-              onItemizedItemEdit={onItemizedItemEdit}
               onRowAdd={handleAddEvent}
               onRowDel={handleRowDel}
               currency={formData.currency}
-              items={formData.items}
+              products={formData.products}
             />
             <Row className="mt-4 justify-content-end">
               <Col lg={6}>
@@ -387,7 +381,7 @@ const InvoiceForm = () => {
                 discountRate: formData.discountRate,
                 discountAmount: formData.discountAmount,
               }}
-              items={formData.items}
+              products={formData.products}
               currency={formData.currency}
               subTotal={formData.subTotal}
               taxAmount={formData.taxAmount}

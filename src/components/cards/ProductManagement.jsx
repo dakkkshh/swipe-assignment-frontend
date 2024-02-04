@@ -89,13 +89,13 @@ function ProductRow({ product }) {
             <BiSolidPencil />
           </div>
         </Button>
+        <ProductModal
+          showModal={isOpen}
+          closeModal={closeModal}
+          isEdit={true}
+          product={product}
+        />
       </td>
-      <ProductModal
-        showModal={isOpen}
-        closeModal={closeModal}
-        isEdit={true}
-        product={product}
-      />
     </tr>
   );
 }
