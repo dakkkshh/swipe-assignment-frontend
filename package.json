@@ -1,6 +1,7 @@
 {
   "name": "invoice-generator",
   "version": "0.1.0",
+  "homepage": "https://dakkkshh.github.io/swipe-assignment-frontend",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.6",
@@ -9,6 +10,7 @@
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.1.0",
     "file-saver": "^2.0.5",
+    "gh-pages": "^6.1.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.3.1",
     "react": "^17.0.2",
@@ -22,6 +24,8 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
