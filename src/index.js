@@ -8,7 +8,9 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter
+    basename="/swipe-assignment-frontend"
+  >
     <Provider store={store}>
       <React.StrictMode>
         <App />
