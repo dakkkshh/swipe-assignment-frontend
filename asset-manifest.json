@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/swipe-assignment-frontend/static/css/main.2a8e07a2.css",
+    "main.js": "/swipe-assignment-frontend/static/js/main.4b3ff1f4.js",
+    "static/js/703.6f79e622.chunk.js": "/swipe-assignment-frontend/static/js/703.6f79e622.chunk.js",
+    "static/js/198.3fe4336c.chunk.js": "/swipe-assignment-frontend/static/js/198.3fe4336c.chunk.js",
+    "static/js/787.ce07382d.chunk.js": "/swipe-assignment-frontend/static/js/787.ce07382d.chunk.js",
+    "index.html": "/swipe-assignment-frontend/index.html",
+    "main.2a8e07a2.css.map": "/swipe-assignment-frontend/static/css/main.2a8e07a2.css.map",
+    "main.4b3ff1f4.js.map": "/swipe-assignment-frontend/static/js/main.4b3ff1f4.js.map",
+    "703.6f79e622.chunk.js.map": "/swipe-assignment-frontend/static/js/703.6f79e622.chunk.js.map",
+    "198.3fe4336c.chunk.js.map": "/swipe-assignment-frontend/static/js/198.3fe4336c.chunk.js.map",
+    "787.ce07382d.chunk.js.map": "/swipe-assignment-frontend/static/js/787.ce07382d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2a8e07a2.css",
+    "static/js/main.4b3ff1f4.js"
+  ]
+}
